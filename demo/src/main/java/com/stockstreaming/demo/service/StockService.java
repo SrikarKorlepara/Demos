@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import reactor.core.publisher.Flux;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -32,38 +34,6 @@ public class StockService {
     public List<Stock> getAllStocks() {
         return stockRepository.findAll();
     }
-
-    public StreamingResponseBody streamStocks(HttpServletResponse response) {
-        response.setContentType("text/event-stream");
-        response.setHeader("Connection", "keep-alive");
-        response.setHeader("Cache-Control", "no-cache");
-        ObjectMapper objectMapper = new ObjectMapper();
-        return outputStream -> {
-            TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-            transactionTemplate.setReadOnly(true);
-            transactionTemplate.execute(status ->{
-            try (var stockStream = stockRepository.streamAllStocks()) {
-                stockStream.forEach(
-                        stock -> {
-                            try {
-                                String json = objectMapper.writeValueAsString(stock) + "\n";
-                                outputStream.write(json.getBytes());
-                                outputStream.flush();
-                                if (Thread.currentThread().isInterrupted()) {
-                                    log.warn("Stream interrupted by client disconnection {}",status);
-                                    return;
-                                }
-                                Thread.sleep(100);
-                            }
-                            catch (Exception e) {
-                                throw new RuntimeException("Error streaming stock data", e);
-                            }
-                        });
-            }
-                return null;
-            });
-    };
-}
 
     public StreamingResponseBody streamStocksV2(HttpServletResponse response) {
         response.setContentType("text/event-stream");
@@ -142,7 +112,6 @@ public class StockService {
         };
     }
 
-
     public StreamingResponseBody streamStocksWithPagination(
             int page, int size, HttpServletResponse response) {
 
@@ -180,5 +149,18 @@ public class StockService {
                 return null;
             });
         };
+    }
+
+    public Flux<Stock> streamStocksReactive() {
+        return Flux.fromIterable(stockRepository.findAll())
+                .delayElements(Duration.ofSeconds(1));
+    }
+
+    public Stock getRandomStock() {
+        long count = stockRepository.count();
+        int randomIndex = (int) (Math.random() * count);
+        Pageable pageable = PageRequest.of(randomIndex, 1);
+        List<Stock> stocks = stockRepository.findAll(pageable).getContent();
+        return stocks.isEmpty() ? null : stocks.get(0);
     }
 }
