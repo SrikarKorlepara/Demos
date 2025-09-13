@@ -63,28 +63,23 @@ public class StockDataLoader implements CommandLineRunner {
         long existingCount = stockRepository.count();
 
         if (existingCount > 0) {
-            log.info("Database already contains {} stock records. Skipping data generation.", existingCount);
-            return;
+            log.info("Database already contains {} stock records. Clearing existing data.", existingCount);
+            stockRepository.deleteAll();
+        } else {
+            log.info("Database is empty. Proceeding to load stock data.");
         }
-
-        log.info("Generating 1000 stock records...");
-
-        List<Stock> stocks = generateStockData();
-        stockRepository.saveAll(stocks);
-
-        log.info("Successfully created {} stock records in the database", stocks.size());
-        log.info("H2 Console available at: http://localhost:8080/h2-console");
+        generateStockData(1000);
+        log.info("Stock data loading completed.");
     }
 
-    private List<Stock> generateStockData() {
+    private void generateStockData(int count) {
+        log.info("Generating {} stock records...",count);
         List<Stock> stocks = new ArrayList<>();
 
-        for (int i = 1; i <= 1000; i++) {
+        for (int i = 1; i <= count; i++) {
             Stock stock = new Stock();
-
             String sector = SECTORS[random.nextInt(SECTORS.length)];
             String industry = getIndustryForSector(sector);
-
             stock.setName(generateCompanyName(industry));
             stock.setSymbol(generateSymbol(i));
             stock.setPrice(generatePrice());
@@ -92,9 +87,17 @@ public class StockDataLoader implements CommandLineRunner {
             stock.setIndustry(industry);
 
             stocks.add(stock);
-        }
 
-        return stocks;
+            if (i % 1000 == 0) {
+                stockRepository.saveAll(stocks);
+                stocks.clear();
+                System.out.println("Inserted " + i + " records");
+            }
+        }
+        if (!stocks.isEmpty()) {
+            stockRepository.saveAll(stocks);
+        }
+        log.info("Generated and inserted {} stock records.", count);
     }
 
     private String getIndustryForSector(String sector) {
