@@ -1,7 +1,7 @@
 package com.stockstreaming.demo.controller;
 
 import com.stockstreaming.demo.model.Stock;
-import com.stockstreaming.demo.service.StockService;
+import com.stockstreaming.demo.service.ReactiveStockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import java.time.Duration;
 @RequestMapping("/reactive/stocks")
 @RequiredArgsConstructor
 public class ReactiveStockController {
-    private final StockService stockService;
+    private final ReactiveStockService stockService;
 
     @GetMapping(value="/stream",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Stock> streamStocks() {
