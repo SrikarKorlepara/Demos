@@ -1,7 +1,7 @@
 package com.stockstreaming.demo.controller;
 
 import com.stockstreaming.demo.model.Stock;
-import com.stockstreaming.demo.service.ReactiveStockService;
+import com.stockstreaming.demo.service.impl.ReactiveStockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

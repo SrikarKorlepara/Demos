@@ -1,8 +1,7 @@
-package com.stockstreaming.demo.service;
+package com.stockstreaming.demo.service.impl;
 
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stockstreaming.demo.repository.StockRepository;
 //import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,18 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import com.stockstreaming.demo.model.Stock;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 //import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import reactor.core.publisher.Flux;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
