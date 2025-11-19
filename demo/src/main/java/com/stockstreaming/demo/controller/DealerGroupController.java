@@ -3,6 +3,8 @@ package com.stockstreaming.demo.controller;
 import com.stockstreaming.demo.dto.DealerGroupCreateRequestDto;
 import com.stockstreaming.demo.dto.DealerGroupRequestDto;
 import com.stockstreaming.demo.dto.DealerGroupResponseDto;
+import com.stockstreaming.demo.model.DealerGroup;
+import com.stockstreaming.demo.repository.DealerGroupRepository;
 import com.stockstreaming.demo.service.DealerGroupService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.List;
 public class DealerGroupController {
 
     private final DealerGroupService dealerGroupService;
+    private final DealerGroupRepository dealerGroupRepository;
 
     @GetMapping("/{businessId}")
     public ResponseEntity<DealerGroupResponseDto> getDealerGroupByBusinessId(@PathVariable String businessId) {
@@ -60,4 +63,7 @@ public class DealerGroupController {
         dealerGroupService.deleteDealerGroup(businessId);
         return ResponseEntity.noContent().build();
     }
+
+
+
 }
