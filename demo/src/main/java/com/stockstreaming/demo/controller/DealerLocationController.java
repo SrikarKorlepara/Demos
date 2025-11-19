@@ -5,10 +5,12 @@ import com.stockstreaming.demo.dto.DealerLocationCreateRequestDto;
 import com.stockstreaming.demo.dto.DealerLocationRequestDto;
 import com.stockstreaming.demo.dto.DealerLocationResponseDto;
 import com.stockstreaming.demo.service.DealerLocationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,15 +22,16 @@ public class DealerLocationController {
 
 
     @PostMapping
-    public ResponseEntity<DealerLocationResponseDto> createDealerLocation(DealerLocationCreateRequestDto dealerLocationRequestDto) {
+    public ResponseEntity<DealerLocationResponseDto> createDealerLocation(
+            @Valid @RequestBody DealerLocationCreateRequestDto dealerLocationRequestDto) {
         DealerLocationResponseDto responseDto = dealerLocationService.createDealerLocation(dealerLocationRequestDto);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.created(URI.create("/dealer-locations/" + responseDto.getLocationId())).body(responseDto);
     }
 
     @PutMapping("/{locationId}")
     public ResponseEntity<DealerLocationResponseDto> updateDealerLocation(
             @PathVariable String locationId,
-            @RequestBody DealerLocationRequestDto dealerLocationRequestDto) {
+            @RequestBody @Valid DealerLocationRequestDto dealerLocationRequestDto) {
         DealerLocationResponseDto responseDto = dealerLocationService.updateDealerLocation(locationId, dealerLocationRequestDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -36,7 +39,7 @@ public class DealerLocationController {
     @PatchMapping("/{locationId}")
     public ResponseEntity<DealerLocationResponseDto> partialUpdateDealerLocation(
             @PathVariable String locationId,
-            @RequestBody DealerLocationRequestDto dealerLocationRequestDto) {
+            @RequestBody @Valid DealerLocationRequestDto dealerLocationRequestDto) {
         DealerLocationResponseDto responseDto = dealerLocationService.partialUpdateDealerLocation(locationId, dealerLocationRequestDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -51,6 +54,5 @@ public class DealerLocationController {
     public ResponseEntity<List<DealerLocationResponseDto>> getAllDealerLocations() {
         return ResponseEntity.ok().body(dealerLocationService.getDealerLocations());
     }
-
 
 }

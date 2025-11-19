@@ -15,17 +15,17 @@ public class LoggingAspect {
         String methodName = proceedingJoinPoint.getSignature().getName();
         Object[] args = proceedingJoinPoint.getArgs();
 
-        log.info("Entering method: {} with arguments: {}", methodName, args);
+        log.info("Entering Demo method: {} with arguments: {}", methodName, args);
         long startTime = System.currentTimeMillis();
         try {
             Object result = proceedingJoinPoint.proceed();
             long endTime = System.currentTimeMillis();
-            log.info("Exiting method: {} with result: {}. Execution time: {} ms",
+            log.info("Exiting Demo method: {} with result: {}. Execution time: {} ms",
                     methodName, result, (endTime - startTime));
             return result;
         } catch (Throwable throwable) {
             long endTime = System.currentTimeMillis();
-            log.error("Exception in method: {} with message: {}. Execution time: {} ms",
+            log.error("Exception in Demo method: {} with message: {}. Execution time: {} ms",
                     methodName, throwable.getMessage(), (endTime - startTime));
             throw new RuntimeException(throwable);
         }
