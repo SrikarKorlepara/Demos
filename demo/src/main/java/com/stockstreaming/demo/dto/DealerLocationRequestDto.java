@@ -1,6 +1,5 @@
 package com.stockstreaming.demo.dto;
 
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DealerLocationCreateRequest {
-
+public class DealerLocationRequestDto {
+    private Long id;
 
     @NotBlank(message = "Location ID is required")
     @Size(max = 50, message = "Location ID must not exceed 50 characters")
@@ -32,6 +31,5 @@ public class DealerLocationCreateRequest {
     private String city;
 
     private String phoneNumber;
-
 
 }

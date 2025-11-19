@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,4 +18,5 @@ public class DealerGroupResponseDto {
     private String name;
     private String businessId;
     private String description;
+    private List<DealerLocationResponseDto> dealerLocations;
 }

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,5 +28,7 @@ public class DealerGroupRequestDto {
 
     @Size(max = 255, message = "Description must not exceed 255 characters")
     private String description;
+
+    private List<DealerLocationResponseDto> dealerLocations;
 
 }

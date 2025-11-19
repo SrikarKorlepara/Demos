@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +47,14 @@ public class DealerGroupServiceImpl  implements DealerGroupService {
 
     @Override
     public DealerGroupResponseDto getDealerGroupByBusinessId(String businessId) {
-        DealerGroup dealerGroupOpt = dealerGroupRepository.findByBusinessId(businessId)
-                .orElseThrow(() -> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
+        DealerGroup dealerGroupOpt = this.getEntityById(businessId);
         return dealerGroupMapper.toResponseDto(dealerGroupOpt);
+    }
+
+    @Override
+    public DealerGroup getEntityById(String businessId) {
+        return dealerGroupRepository.findByBusinessId(businessId)
+                .orElseThrow(() -> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
     }
 
     @Transactional
