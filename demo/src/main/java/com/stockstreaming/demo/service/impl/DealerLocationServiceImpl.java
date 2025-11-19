@@ -1,6 +1,7 @@
 package com.stockstreaming.demo.service.impl;
 
-import com.stockstreaming.demo.dto.DealerLocationCreateRequest;
+import com.stockstreaming.demo.dto.DealerLocationCreateRequestDto;
+import com.stockstreaming.demo.dto.DealerLocationRequestDto;
 import com.stockstreaming.demo.dto.DealerLocationResponseDto;
 import com.stockstreaming.demo.mapper.DealerLocationMapper;
 import com.stockstreaming.demo.model.DealerGroup;
@@ -10,6 +11,8 @@ import com.stockstreaming.demo.service.DealerGroupService;
 import com.stockstreaming.demo.service.DealerLocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,9 +24,9 @@ public class DealerLocationServiceImpl implements DealerLocationService{
 
 
     @Override
-    public DealerLocationResponseDto createDealerLocation(DealerLocationCreateRequest dealerLocationCreateRequest) {
-        DealerGroup dealerGroup = dealerGroupService.getEntityById(dealerLocationCreateRequest.getDealerGroupId());
-        DealerLocation dealerLocation = dealerLocationMapper.toCreateEntity(dealerLocationCreateRequest);
+    public DealerLocationResponseDto createDealerLocation(DealerLocationCreateRequestDto dealerLocationCreateRequestDto) {
+        DealerGroup dealerGroup = dealerGroupService.getEntityById(dealerLocationCreateRequestDto.getDealerGroupId());
+        DealerLocation dealerLocation = dealerLocationMapper.toCreateEntity(dealerLocationCreateRequestDto);
         dealerLocation.setDealerGroup(dealerGroup);
         DealerLocation savedDealerLocation = dealerLocationRepository.save(dealerLocation);
         return dealerLocationMapper.toResponseDto(savedDealerLocation);
@@ -31,22 +34,37 @@ public class DealerLocationServiceImpl implements DealerLocationService{
 
     /**
      * @param locationId
-     * @param dealerLocationCreateRequest
+     * @param dealerLocationCreateRequestDto
      * @return
      */
     @Override
-    public DealerLocationResponseDto updateDealerLocation(String locationId, DealerLocationCreateRequest dealerLocationCreateRequest) {
-        return null;
+    public DealerLocationResponseDto updateDealerLocation(String locationId, DealerLocationRequestDto dealerLocationRequestDto) {
+        DealerLocation existingDealerLocation = dealerLocationRepository.findByLocationId(locationId)
+                .orElseThrow(() -> new RuntimeException("Dealer Location not found with id: " + locationId));
+        DealerGroup dealerGroup = dealerGroupService.getEntityById(dealerLocationRequestDto.getDealerGroupId());
+        DealerLocation updatedDealerLocation = dealerLocationMapper.toEntity(dealerLocationRequestDto);
+        updatedDealerLocation.setId(existingDealerLocation.getId());
+        updatedDealerLocation.setDealerGroup(dealerGroup);
+        DealerLocation savedDealerLocation = dealerLocationRepository.save(updatedDealerLocation);
+        return dealerLocationMapper.toResponseDto(savedDealerLocation);
     }
 
     /**
      * @param locationId
-     * @param dealerLocationCreateRequest
+     * @param dealerLocationCreateRequestDto
      * @return
      */
     @Override
-    public DealerLocationResponseDto partialUpdateDealerLocation(String locationId, DealerLocationCreateRequest dealerLocationCreateRequest) {
-        return null;
+    public DealerLocationResponseDto partialUpdateDealerLocation(String locationId, DealerLocationRequestDto dealerLocationRequestDto) {
+        DealerLocation existingDealerLocation = dealerLocationRepository.findByLocationId(locationId)
+                .orElseThrow(() -> new RuntimeException("Dealer Location not found with id: " + locationId));
+        dealerLocationMapper.partialUpdate(dealerLocationRequestDto, existingDealerLocation);
+        if (dealerLocationRequestDto.getDealerGroupId() != null) {
+            DealerGroup dealerGroup = dealerGroupService.getEntityById(dealerLocationRequestDto.getDealerGroupId());
+            existingDealerLocation.setDealerGroup(dealerGroup);
+        }
+        DealerLocation savedDealerLocation = dealerLocationRepository.save(existingDealerLocation);
+        return dealerLocationMapper.toResponseDto(savedDealerLocation);
     }
 
     /**
@@ -55,7 +73,9 @@ public class DealerLocationServiceImpl implements DealerLocationService{
      */
     @Override
     public DealerLocationResponseDto getDealerLocationById(String locationId) {
-        return null;
+        DealerLocation dealerLocation = dealerLocationRepository.findByLocationId(locationId)
+                .orElseThrow(() -> new RuntimeException("Dealer Location not found with id: " + locationId));
+        return dealerLocationMapper.toResponseDto(dealerLocation);
     }
 
     /**
@@ -64,6 +84,18 @@ public class DealerLocationServiceImpl implements DealerLocationService{
      */
     @Override
     public DealerLocation getEntityById(String locationId) {
-        return null;
+        return dealerLocationRepository.findByLocationId(locationId)
+                .orElseThrow(() -> new RuntimeException("Dealer Location not found with id: " + locationId));
     }
+
+    /**
+     * @return
+     */
+    @Override
+    public List<DealerLocationResponseDto> getDealerLocations() {
+        List<DealerLocation> dealerLocations = dealerLocationRepository.findAll();
+        return dealerLocationMapper.toResponseDtoList(dealerLocations);
+    }
+
+
 }

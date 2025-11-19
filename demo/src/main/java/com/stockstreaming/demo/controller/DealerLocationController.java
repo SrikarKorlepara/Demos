@@ -1,13 +1,15 @@
 package com.stockstreaming.demo.controller;
 
 
+import com.stockstreaming.demo.dto.DealerLocationCreateRequestDto;
 import com.stockstreaming.demo.dto.DealerLocationRequestDto;
+import com.stockstreaming.demo.dto.DealerLocationResponseDto;
 import com.stockstreaming.demo.service.DealerLocationService;
-import com.stockstreaming.demo.service.impl.DealerLocationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/dealer-locations")
@@ -17,9 +19,38 @@ public class DealerLocationController {
     public final DealerLocationService dealerLocationService;
 
 
-    @GetMapping
-    public DealerLocationRequestDto getDealerLocations() {
-        return null;
+    @PostMapping
+    public ResponseEntity<DealerLocationResponseDto> createDealerLocation(DealerLocationCreateRequestDto dealerLocationRequestDto) {
+        DealerLocationResponseDto responseDto = dealerLocationService.createDealerLocation(dealerLocationRequestDto);
+        return ResponseEntity.ok(responseDto);
     }
+
+    @PutMapping("/{locationId}")
+    public ResponseEntity<DealerLocationResponseDto> updateDealerLocation(
+            @PathVariable String locationId,
+            @RequestBody DealerLocationRequestDto dealerLocationRequestDto) {
+        DealerLocationResponseDto responseDto = dealerLocationService.updateDealerLocation(locationId, dealerLocationRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PatchMapping("/{locationId}")
+    public ResponseEntity<DealerLocationResponseDto> partialUpdateDealerLocation(
+            @PathVariable String locationId,
+            @RequestBody DealerLocationRequestDto dealerLocationRequestDto) {
+        DealerLocationResponseDto responseDto = dealerLocationService.partialUpdateDealerLocation(locationId, dealerLocationRequestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/{locationId}")
+    public ResponseEntity<DealerLocationResponseDto> getDealerLocationById(@PathVariable String locationId) {
+        DealerLocationResponseDto responseDto = dealerLocationService.getDealerLocationById(locationId);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DealerLocationResponseDto>> getAllDealerLocations() {
+        return ResponseEntity.ok().body(dealerLocationService.getDealerLocations());
+    }
+
 
 }

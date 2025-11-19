@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DealerLocationCreateRequest {
+public class DealerLocationCreateRequestDto {
 
 
     @NotBlank(message = "Location ID is required")
