@@ -2,6 +2,7 @@ package com.stockstreaming.demo.controller;
 
 
 import com.stockstreaming.demo.dto.DealerLocationRequestDto;
+import com.stockstreaming.demo.service.DealerLocationService;
 import com.stockstreaming.demo.service.impl.DealerLocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ public class DealerLocationController {
 
     @GetMapping
     public DealerLocationRequestDto getDealerLocations() {
-        return dealerLocationService.getDealerLocations();
+        return null;
     }
 
 }
