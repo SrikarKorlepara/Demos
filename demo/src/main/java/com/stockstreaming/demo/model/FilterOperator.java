@@ -1,11 +1,10 @@
 package com.stockstreaming.demo.model;
 
 public enum FilterOperator {
-    EQUALS,
-    NOT_EQUALS,
+    EQUAL,
+    LIKE,
     GREATER_THAN,
     LESS_THAN,
-    CONTAINS,
-    STARTS_WITH,
-    ENDS_WITH
+    GREATER_THAN_OR_EQUAL,
+    LESS_THAN_OR_EQUAL
 }

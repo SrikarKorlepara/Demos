@@ -6,6 +6,8 @@ import com.stockstreaming.demo.dto.DealerGroupResponseDto;
 import com.stockstreaming.demo.model.DealerGroup;
 import com.stockstreaming.demo.repository.DealerGroupRepository;
 import com.stockstreaming.demo.service.DealerGroupService;
+import com.stockstreaming.demo.service.query.DealerGroupQueryService;
+import com.stockstreaming.demo.service.query.DynamicFilter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ import java.util.List;
 public class DealerGroupController {
 
     private final DealerGroupService dealerGroupService;
-    private final DealerGroupRepository dealerGroupRepository;
+    private final DealerGroupQueryService queryService;
 
     @GetMapping("/{businessId}")
     public ResponseEntity<DealerGroupResponseDto> getDealerGroupByBusinessId(@PathVariable String businessId) {
@@ -62,6 +64,11 @@ public class DealerGroupController {
     public ResponseEntity<Void> deleteDealerGroup(@PathVariable String businessId) {
         dealerGroupService.deleteDealerGroup(businessId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/search")
+    public List<DealerGroup> search(@RequestBody List<DynamicFilter> filters) {
+        return queryService.search(filters);
     }
 
 
