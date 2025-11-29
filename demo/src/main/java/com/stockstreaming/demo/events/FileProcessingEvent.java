@@ -1,12 +1,9 @@
 package com.stockstreaming.demo.events;
 
-
-import lombok.*;
+import lombok.Builder;
 
 import java.util.UUID;
 
-
 @Builder
-public record FileUploadedEvent(UUID fileId) {
+public record FileProcessingEvent(UUID fileId) {
 }
-
