@@ -30,4 +30,26 @@ public class LoggingAspect {
             throw new RuntimeException(throwable);
         }
     }
+
+    @Around("execution(* com.stockstreaming.demo.listeners..*(..))")
+    public Object logEventListeners(ProceedingJoinPoint proceedingJoinPoint){
+        String methodName = proceedingJoinPoint.getSignature().getName();
+        Object[] args = proceedingJoinPoint.getArgs();
+        String className = proceedingJoinPoint.getTarget().getClass().getSimpleName();
+
+        log.info("🎧 [LISTENER] {} → {} started", className, methodName);
+        long startTime = System.currentTimeMillis();
+        try{
+            Object result = proceedingJoinPoint.proceed();
+            long executionTime = System.currentTimeMillis();
+            log.info("🎧 [LISTENER] {} → {} completed in {} ms", className, methodName, (executionTime - startTime));
+            return result;
+        } catch (Throwable throwable){
+            long executionTime = System.currentTimeMillis();
+            log.error("🎧 [LISTENER] {} → {} failed after {} ms with error: {}",
+                    className, methodName, (executionTime - startTime), throwable.getMessage());
+            throw new RuntimeException(throwable);
+        }
+
+    }
 }
