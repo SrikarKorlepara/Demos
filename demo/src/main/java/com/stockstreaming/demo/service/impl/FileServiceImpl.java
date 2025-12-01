@@ -5,9 +5,11 @@ import com.stockstreaming.demo.model.UploadStatus;
 import com.stockstreaming.demo.model.UploadedFile;
 import com.stockstreaming.demo.repository.UploadedFileRepository;
 import com.stockstreaming.demo.service.FileService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -22,6 +24,7 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Transactional
     public UUID uploadFile(MultipartFile file) {
 
         UploadedFile f = UploadedFile.builder()
