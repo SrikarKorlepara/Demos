@@ -2,6 +2,7 @@ package com.stockstreaming.demo.listeners;
 
 import com.stockstreaming.demo.events.FileProcessingEvent;
 import com.stockstreaming.demo.events.FileUploadedEvent;
+import com.stockstreaming.demo.model.UploadStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
@@ -21,7 +22,7 @@ public class FileUploadedListener {
         System.out.println("[Order 4] FileUploadedListener → Starting event chain");
 
         // trigger next event
-        publisher.publishEvent(new FileProcessingEvent(event.fileId()));
+        publisher.publishEvent(new FileProcessingEvent(event.fileId(), UploadStatus.PROCESSING));
     }
 }
 
