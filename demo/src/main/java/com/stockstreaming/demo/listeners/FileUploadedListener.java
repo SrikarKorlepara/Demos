@@ -1,9 +1,7 @@
 package com.stockstreaming.demo.listeners;
 
 import com.stockstreaming.demo.events.FileProcessingEvent;
-import com.stockstreaming.demo.events.FileStartProcessingEvent;
 import com.stockstreaming.demo.events.FileUploadedEvent;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
@@ -20,14 +18,10 @@ public class FileUploadedListener {
     @Order(3)  // runs after all the new ones
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onFileUploaded(FileUploadedEvent event) {
-        System.out.println("[Order 3] FileUploadedListener → Starting event chain");
-        try {
-            Thread.sleep(5000); // simulate some processing time
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println("[Order 4] FileUploadedListener → Starting event chain");
+
         // trigger next event
-        publisher.publishEvent(new FileStartProcessingEvent(event.fileId()));
+        publisher.publishEvent(new FileProcessingEvent(event.fileId(), UploadStatus.PROCESSING));
     }
 }
 

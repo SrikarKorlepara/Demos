@@ -13,4 +13,5 @@ public interface DealerGroupRepository extends JpaRepository<DealerGroup, Long>,
     boolean existsByBusinessId(String businessId);
 
     Optional<DealerGroup> findByBusinessId(String businessId);
+
 }
