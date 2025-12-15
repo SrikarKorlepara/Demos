@@ -2,6 +2,7 @@ package com.stockstreaming.demo.listeners;
 
 import com.stockstreaming.demo.events.FileProcessingEvent;
 import com.stockstreaming.demo.events.FileUploadedEvent;
+import com.stockstreaming.demo.model.UploadStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.annotation.Order;
