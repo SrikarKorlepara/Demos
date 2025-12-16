@@ -21,16 +21,11 @@ public interface DealerLocationMapper {
     @Mapping(target = "dealerGroup", ignore = true)
     DealerLocation toEntity(DealerLocationRequestDto dto);
 
-    @Named("simpleLocationMapper")
-    @Mapping(target = "dealerGroup", ignore = true)
-    DealerLocationResponseDto toSimpleResponseDto(DealerLocation dealerLocation);
-
     @Mapping(target = "dealerGroup", qualifiedByName = "simpleGroupMapper")
     DealerLocationResponseDto toResponseDto(DealerLocation dealerLocation);
 
     @Named("simpleGroupMapper")
-    @Mapping(target = "dealerLocations", ignore = true)
-    DealerGroupResponseDto toGroupResponseDto(DealerGroup dealerGroup);
+    DealerGroupResponseDto toSimpleResponseDto(DealerGroup dealerGroup);
 
     @Mapping(target = "dealerGroup", ignore = true)
     List<DealerLocationResponseDto> toResponseDtoList(List<DealerLocation> dealerLocations);

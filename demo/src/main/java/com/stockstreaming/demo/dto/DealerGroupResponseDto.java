@@ -14,9 +14,9 @@ import java.util.List;
 @Builder
 public class DealerGroupResponseDto {
 
-    private String id;
+    private Long id;
     private String name;
     private String businessId;
     private String description;
-    private List<DealerLocationResponseDto> dealerLocations;
+
 }

@@ -33,7 +33,7 @@ public class DealerGroup {
     private String description;
 
     @Builder.Default
-    @OneToMany(mappedBy = "dealerGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "dealerGroup", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @OrderBy("city ASC")
     @ToString.Exclude // or "name ASC", or "createdAt DESC"
     private Set<DealerLocation> dealerLocations = new LinkedHashSet<>();

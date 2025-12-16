@@ -29,6 +29,5 @@ public class DealerGroupRequestDto {
     @Size(max = 255, message = "Description must not exceed 255 characters")
     private String description;
 
-    private List<DealerLocationResponseDto> dealerLocations;
 
 }

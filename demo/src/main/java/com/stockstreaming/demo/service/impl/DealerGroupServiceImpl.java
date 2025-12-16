@@ -62,9 +62,8 @@ public class DealerGroupServiceImpl  implements DealerGroupService {
     public DealerGroupResponseDto updateDealerGroup(String businessId, DealerGroupRequestDto dealerGroupRequestDto) {
         DealerGroup existingDealerGroup = dealerGroupRepository.findByBusinessId(businessId)
                 .orElseThrow(()-> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
-        DealerGroup updatedDealerGroup = dealerGroupMapper.toEntity(dealerGroupRequestDto);
-        updatedDealerGroup.setId(existingDealerGroup.getId());
-        var savedDealerGroup = dealerGroupRepository.save(updatedDealerGroup);
+        dealerGroupMapper.updateEntity(dealerGroupRequestDto, existingDealerGroup);
+        var savedDealerGroup = dealerGroupRepository.save(existingDealerGroup);
         return dealerGroupMapper.toResponseDto(savedDealerGroup);
     }
 
