@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
+@Table(name = "uploaded_files")
 @Setter
 @AllArgsConstructor
 @Builder
