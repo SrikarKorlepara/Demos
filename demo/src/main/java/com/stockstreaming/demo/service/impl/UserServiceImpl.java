@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(request.password()))
                 .enabled(false)
                 .build();
-        user.getRoles().add(defaultRole);
+        user.addRole(defaultRole);
         userRepository.save(user);
 
         return "User created successfully";

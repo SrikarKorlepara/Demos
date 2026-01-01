@@ -45,7 +45,9 @@ public class SecurityConfig {
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/api/users/create").permitAll()
                 .requestMatchers("/auth/test/login").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated())
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
@@ -68,4 +70,5 @@ public class SecurityConfig {
         return builder.getAuthenticationManager();
 
     }
+
 }

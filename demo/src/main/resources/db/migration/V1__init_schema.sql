@@ -18,7 +18,9 @@ CREATE TABLE user_roles (
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 
-INSERT INTO roles (name) VALUES ('USER'), ('ADMIN');
+INSERT INTO roles (name) VALUES ('ROLE_USER'), ('ROLE_ADMIN');
+INSERT INTO users (username,password,enabled) VALUES ('admin','$2a$12$KeWeYR2RW2rT3uS3LhNr5u00TeJ34IzTNg80vFmuh8aEOxWM2./Ju',TRUE), ('user','$2a$12$7EH1hzKFTPyEZVLCych3J..EVUbe7VB0.9IoxOHNqxYdRS0cdgii6',TRUE);
+INSERT INTO user_roles (user_id, role_id) VALUES (1,2),(2,1);
 
 CREATE TABLE uploaded_files (
     id UUID PRIMARY KEY,
