@@ -24,7 +24,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -39,11 +38,23 @@ public class User {
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AuthProvider authProvider;
+
+    private String providerId;
+
     public void addRole(Role role) {
         if (roles == null) {
             roles = new HashSet<>();
         }
         roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        if (roles != null) {
+            roles.remove(role);
+        }
     }
 
 }

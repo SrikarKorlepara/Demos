@@ -1,0 +1,12 @@
+ALTER TABLE users
+ADD COLUMN auth_provider VARCHAR(50) NOT NULL DEFAULT 'LOCAL';
+
+ALTER TABLE users
+ADD COLUMN provider_id VARCHAR(100);
+
+ALTER TABLE users
+ALTER COLUMN password DROP NOT NULL;
+
+UPDATE users
+SET auth_provider = 'LOCAL'
+WHERE auth_provider IS NULL;

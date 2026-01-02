@@ -1,5 +1,8 @@
 package com.stockstreaming.demo.util;
 
+import com.stockstreaming.demo.model.AuthProvider;
+import com.stockstreaming.demo.model.Role;
+import com.stockstreaming.demo.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -40,14 +44,29 @@ public class JwtUtils {
 
     // generate token
     public String generateTokenFromUsername(UserDetails userDetails){
+        log.info("Granted Authorities: {} ", userDetails.getAuthorities().toString());
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("roles",userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
+                .claim("provider", AuthProvider.LOCAL)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(key())
                 .compact();
     }
+
+    public String generateTokenFromUser(User user) {
+
+        return Jwts.builder()
+                .setSubject(user.getUsername())
+                .claim("roles", user.getRoles().stream().map(Role::getName).toList())
+                .claim("provider", user.getAuthProvider().name())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(key())
+                .compact();
+    }
+
 
     // extract claims
     public Claims extractClaims(String token) {

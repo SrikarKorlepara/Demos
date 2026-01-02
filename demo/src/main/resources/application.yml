@@ -2,6 +2,16 @@ spring:
   app:
     jwtSecret: Va2i7Wuhv4gkgHXsKvLv7TLz2JrYkZPvuwK8u1F4+2M=
     jwtExpirationMs: 300000
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23li8807ykEevqvI7q
+            client-secret: 7de2b1baaeb1ba39b82e320ac1c36e5a5d4844b5
+            scope:
+              - read:user
+              - user:email
   datasource:
     url: jdbc:h2:mem:streamingDemo;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver

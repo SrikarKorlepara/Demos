@@ -2,6 +2,8 @@ package com.stockstreaming.demo.config;
 
 
 import com.stockstreaming.demo.security.AuthTokenFilter;
+import com.stockstreaming.demo.security.OAuth2SuccessHandler;
+import com.stockstreaming.demo.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -41,22 +43,72 @@ public class SecurityConfig {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
+
+//    @Bean
+//    @Order(1)
+//    SecurityFilterChain formLoginChain(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher("/login", "/oauth2/**", "/h2-console/**")
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll()
+//                )
+//                .formLogin(form-> form
+//                        .successHandler((request, response, authentication) -> {
+//                            String jwt = jwtUtils.generateTokenFromUsername(
+//                                    (UserDetails) authentication.getPrincipal()
+//                            );
+//                            response.setContentType("application/json");
+//                            response.getWriter().write("{\"token\":\"" + jwt + "\"}");
+//                        }).defaultSuccessUrl("/api/auth/test/hello", true))
+//                .sessionManagement(session ->
+//                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//                )
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .headers(headers ->
+//                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+//                );
+//
+//        return http.build();
+//    }
+
+
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/users/create").permitAll()
-                .requestMatchers("/auth/test/login").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                .anyRequest().authenticated())
-                .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(withDefaults())
-                .exceptionHandling(exception->exception.authenticationEntryPoint(authenticationEntryPoint))
-                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
+        http
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers(
+                                "/api/users/create",
+                                "/auth/test/login",
+                                "/auth/**",
+                                "/oauth2/**",
+                                "/login/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/h2-console/**"
+                        ).permitAll()
+                .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2->oauth2
+                        .successHandler(oAuth2SuccessHandler))
+
+                .addFilterBefore(
+                        authTokenFilter, UsernamePasswordAuthenticationFilter.class
+                )
+                .exceptionHandling(
+                        exception->exception.authenticationEntryPoint(authenticationEntryPoint)
+                )
+                .sessionManagement(
+                        session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .csrf(
+                        AbstractHttpConfigurer::disable
+                )
                 .headers(headers->
-                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                );
         return http.build();
     }
 

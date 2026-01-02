@@ -1,6 +1,7 @@
 package com.stockstreaming.demo.service.impl;
 
 import com.stockstreaming.demo.dto.UserCreationRequest;
+import com.stockstreaming.demo.model.AuthProvider;
 import com.stockstreaming.demo.model.Role;
 import com.stockstreaming.demo.model.User;
 import com.stockstreaming.demo.repository.RoleRepository;
@@ -42,4 +43,8 @@ public class UserServiceImpl implements UserService {
 
         return "User created successfully";
     }
+
+
+
+
 }
