@@ -34,7 +34,7 @@ public class AuthTokenFilter extends OncePerRequestFilter{
             String token = jwtUtils.getJwtFromHeader(request);
             if (token != null && jwtUtils.validateJwtToken(token)) {
                 Claims claims = jwtUtils.extractClaims(token);
-                String username = claims.getSubject();
+                String userId = claims.getSubject();
 
                 @SuppressWarnings("unchecked")
                 List<String> roles = (List<String>) claims.get("roles");
@@ -42,7 +42,7 @@ public class AuthTokenFilter extends OncePerRequestFilter{
                         roles.stream()
                                 .<GrantedAuthority>map(SimpleGrantedAuthority::new)
                                 .toList();
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username,null,authorities);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId,null,authorities);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

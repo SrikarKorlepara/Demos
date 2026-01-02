@@ -42,23 +42,12 @@ public class JwtUtils {
         return null;
     }
 
-    // generate token
-    public String generateTokenFromUsername(UserDetails userDetails){
-        log.info("Granted Authorities: {} ", userDetails.getAuthorities().toString());
-        return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .claim("roles",userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList())
-                .claim("provider", AuthProvider.LOCAL)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(key())
-                .compact();
-    }
-
+    // generate token from user info
     public String generateTokenFromUser(User user) {
 
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject(String.valueOf(user.getId()))
+                .claim("username", user.getUsername())
                 .claim("roles", user.getRoles().stream().map(Role::getName).toList())
                 .claim("provider", user.getAuthProvider().name())
                 .setIssuedAt(new Date())

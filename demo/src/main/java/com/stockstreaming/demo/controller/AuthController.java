@@ -2,6 +2,8 @@ package com.stockstreaming.demo.controller;
 
 import com.stockstreaming.demo.dto.LoginRequest;
 import com.stockstreaming.demo.dto.LoginResponse;
+import com.stockstreaming.demo.model.User;
+import com.stockstreaming.demo.repository.UserRepository;
 import com.stockstreaming.demo.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +25,13 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
+    private final UserRepository userRepository;
 
 
     @GetMapping("/hello")
     @PreAuthorize("isAuthenticated()")
     public String hello() {
-        return "Hello, authenticated user!";
+        return "Hello, authenticated user! " + SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @GetMapping("/admin")
@@ -48,13 +51,14 @@ public class AuthController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String jwt = jwtUtils.generateTokenFromUsername(userDetails);
-        String username = userDetails.getUsername();
+
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+        String jwt = jwtUtils.generateTokenFromUser(user);
         var roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-
-        return ResponseEntity.ok(new LoginResponse(jwt, username, roles));
+        log.info("User {} logged in successfully", authentication.getName());
+        return ResponseEntity.ok(new LoginResponse(jwt, user.getId().toString(), user.getUsername(), roles));
     }
 
 }
