@@ -28,9 +28,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Run tests
+      working-directory: demo
       env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRATION_MS: ${{ secrets.JWT_EXPIRATION_MS }}
+          JWT_SECRET: DUMMY
+          JWT_EXPIRATION_MS: 9000
       run: mvn clean test
     - name: Package app
       run: mvn clean package -DskipTests
