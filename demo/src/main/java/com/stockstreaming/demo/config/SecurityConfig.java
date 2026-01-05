@@ -1,9 +1,9 @@
 package com.stockstreaming.demo.config;
 
 
+import com.stockstreaming.demo.security.AuthEntryPointJwt;
 import com.stockstreaming.demo.security.AuthTokenFilter;
 import com.stockstreaming.demo.security.OAuth2SuccessHandler;
-import com.stockstreaming.demo.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,19 +17,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import javax.sql.DataSource;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableMethodSecurity
@@ -41,37 +33,9 @@ public class SecurityConfig {
 
     private final AuthTokenFilter authTokenFilter;
 
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AuthEntryPointJwt authenticationEntryPoint;
 
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-
-
-//    @Bean
-//    @Order(1)
-//    SecurityFilterChain formLoginChain(HttpSecurity http) throws Exception {
-//        http
-//                .securityMatcher("/login", "/oauth2/**", "/h2-console/**")
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()
-//                )
-//                .formLogin(form-> form
-//                        .successHandler((request, response, authentication) -> {
-//                            String jwt = jwtUtils.generateTokenFromUsername(
-//                                    (UserDetails) authentication.getPrincipal()
-//                            );
-//                            response.setContentType("application/json");
-//                            response.getWriter().write("{\"token\":\"" + jwt + "\"}");
-//                        }).defaultSuccessUrl("/api/auth/test/hello", true))
-//                .sessionManagement(session ->
-//                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//                )
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .headers(headers ->
-//                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-//                );
-//
-//        return http.build();
-//    }
 
 
     @Bean
@@ -122,5 +86,32 @@ public class SecurityConfig {
         return builder.getAuthenticationManager();
 
     }
+
+    //    @Bean
+//    @Order(1)
+//    SecurityFilterChain formLoginChain(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher("/login", "/oauth2/**", "/h2-console/**")
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll()
+//                )
+//                .formLogin(form-> form
+//                        .successHandler((request, response, authentication) -> {
+//                            String jwt = jwtUtils.generateTokenFromUsername(
+//                                    (UserDetails) authentication.getPrincipal()
+//                            );
+//                            response.setContentType("application/json");
+//                            response.getWriter().write("{\"token\":\"" + jwt + "\"}");
+//                        }).defaultSuccessUrl("/api/auth/test/hello", true))
+//                .sessionManagement(session ->
+//                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//                )
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .headers(headers ->
+//                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+//                );
+//
+//        return http.build();
+//    }
 
 }

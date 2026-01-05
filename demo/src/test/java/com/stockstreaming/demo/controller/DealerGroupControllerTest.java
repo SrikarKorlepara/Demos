@@ -6,13 +6,16 @@ import com.stockstreaming.demo.dto.DealerGroupCreateRequestDto;
 import com.stockstreaming.demo.dto.DealerGroupRequestDto;
 import com.stockstreaming.demo.dto.DealerGroupResponseDto;
 import com.stockstreaming.demo.model.DealerGroup;
+import com.stockstreaming.demo.security.AuthTokenFilter;
 import com.stockstreaming.demo.service.DealerGroupService;
 import com.stockstreaming.demo.service.query.DealerGroupQueryService;
+import com.stockstreaming.demo.util.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -30,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @WebMvcTest(DealerGroupController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class DealerGroupControllerTest {
 
     @MockitoBean
@@ -37,6 +41,12 @@ public class DealerGroupControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private JwtUtils jwtUtils;
+
+    @MockitoBean
+    private AuthTokenFilter authTokenFilter;
 
     @MockitoBean
     private DealerGroupQueryService dealerGroupQueryService;

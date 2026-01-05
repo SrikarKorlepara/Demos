@@ -8,7 +8,9 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,12 +26,22 @@ import java.util.List;
 public class JwtUtils {
 
     // secret
-    @Value("${spring.app.jwtSecret}")
-    private String jwtSecret;
+    private final String jwtSecret;
+    private final int jwtExpirationMs;
 
-    // expiration in milliseconds
-    @Value("${spring.app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    @PostConstruct
+    public void init() {
+        log.info("JWT Secret loaded? {}", jwtSecret != null);
+    }
+
+
+    public JwtUtils(
+            @Value("${spring.app.jwtSecret}") String jwtSecret,
+            @Value("${spring.app.jwtExpirationMs}") int jwtExpirationMs
+    ) {
+        this.jwtSecret = jwtSecret;
+        this.jwtExpirationMs = jwtExpirationMs;
+    }
 
     // fetch token
     public String getJwtFromHeader(HttpServletRequest request){
