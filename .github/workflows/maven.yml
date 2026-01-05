@@ -30,9 +30,14 @@ jobs:
     - name: Run tests
       working-directory: demo
       env:
-          JWT_SECRET: DUMMYY
-          JWT_EXPIRATION_MS: 9000
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION_MS: ${{ vars.JWT_EXPIRATION_MS }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
       run: mvn clean test
     - name: Package app
       working-directory: demo
       run: mvn clean package -DskipTests
+      env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION_MS: ${{ vars.JWT_EXPIRATION_MS }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
