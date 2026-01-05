@@ -1,14 +1,17 @@
 spring:
   app:
-    jwtSecret: Va2i7Wuhv4gkgHXsKvLv7TLz2JrYkZPvuwK8u1F4+2M=
-    jwtExpirationMs: 300000
+#    jwtSecret: Va2i7Wuhv4gkgHXsKvLv7TLz2JrYkZPvuwK8u1F4+2M=
+    jwtSecret :  ${JWT_SECRET}
+#    jwtExpirationMs: 300000
+    jwtExpirationMs: ${JWT_EXPIRATION_MS}
   security:
     oauth2:
       client:
         registration:
           github:
             client-id: Ov23li8807ykEevqvI7q
-            client-secret: 7de2b1baaeb1ba39b82e320ac1c36e5a5d4844b5
+#            client-secret: 7de2b1baaeb1ba39b82e320ac1c36e5a5d4844b5
+            client-secret: ${CLIENT_SECRET}
             scope:
               - read:user
               - user:email
