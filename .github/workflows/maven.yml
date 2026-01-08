@@ -41,3 +41,14 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRATION_MS: ${{ vars.JWT_EXPIRATION_MS }}
           GITHUB_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+    - name: Build Docker image
+      working-directory: demo
+      run: |
+        docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/streaming-demo-app:${{ github.sha }} .
+
+    - name: Push Docker image
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/streaming-demo-app:${{ github.sha }}
+
