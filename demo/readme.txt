@@ -1,3 +1,4 @@
 Streaming demo application
 
-This is a simple demo application that showcases streaming capabilities.
+Implementing a learning project to understand various basic features like authentication
+authorization
