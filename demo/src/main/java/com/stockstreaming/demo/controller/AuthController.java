@@ -34,6 +34,11 @@ public class AuthController {
         return "Hello, authenticated user! " + SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    @GetMapping("/sr")
+    public String helloSr(){
+        return "Hello Srikar!";
+    }
+
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public String admin() {
