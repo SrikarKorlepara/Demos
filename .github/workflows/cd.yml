@@ -21,7 +21,7 @@ jobs:
           key: ${{secrets.EC2_SSH_KEY}}
           script: |
             set -e 
-            IMAGE = ${{secrets.DOCKER_USERNAME}}/streaming-demo-app:${{ github.sha }}
+            IMAGE=${{secrets.DOCKER_USERNAME}}/streaming-demo-app:${{ github.sha }}
             echo "Deploying image : $IMAGE"
             docker pull $IMAGE
             docker stop streaming-demo || true
