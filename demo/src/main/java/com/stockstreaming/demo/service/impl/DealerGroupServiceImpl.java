@@ -9,16 +9,22 @@ import com.stockstreaming.demo.repository.DealerGroupRepository;
 import com.stockstreaming.demo.service.DealerGroupService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DealerGroupServiceImpl  implements DealerGroupService {
 
     private final DealerGroupMapper dealerGroupMapper;
     private final DealerGroupRepository dealerGroupRepository;
+    private final CacheInspectionService cacheInspectionService;
 
     @Transactional
     @Override
@@ -39,6 +45,7 @@ public class DealerGroupServiceImpl  implements DealerGroupService {
 
     @Transactional
     @Override
+    @CacheEvict(value = "dealerGroupEntity", key = "#businessId")
     public void deleteDealerGroup(String businessId) {
         DealerGroup dealerGroup = dealerGroupRepository.findByBusinessId(businessId).orElseThrow(() ->
                 new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
@@ -52,13 +59,16 @@ public class DealerGroupServiceImpl  implements DealerGroupService {
     }
 
     @Override
+    @Cacheable(value = "dealerGroupEntity", key = "#businessId")
     public DealerGroup getEntityById(String businessId) {
+        log.info("Fetching DealerGroup entity with businessId {} from database.", businessId);
         return dealerGroupRepository.findByBusinessId(businessId)
                 .orElseThrow(() -> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
     }
 
     @Transactional
     @Override
+    @CachePut(value = "dealerGroupEntity", key = "#businessId")
     public DealerGroupResponseDto updateDealerGroup(String businessId, DealerGroupRequestDto dealerGroupRequestDto) {
         DealerGroup existingDealerGroup = dealerGroupRepository.findByBusinessId(businessId)
                 .orElseThrow(()-> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
