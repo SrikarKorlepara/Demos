@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -45,7 +46,7 @@ public class DealerGroupServiceImpl  implements DealerGroupService {
 
     @Transactional
     @Override
-    @CacheEvict(value = "dealerGroupEntity", key = "#businessId")
+    @CacheEvict(value = "dealerGroupEntity", key = "#businessId" , beforeInvocation = true)
     public void deleteDealerGroup(String businessId) {
         DealerGroup dealerGroup = dealerGroupRepository.findByBusinessId(businessId).orElseThrow(() ->
                 new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
@@ -54,38 +55,52 @@ public class DealerGroupServiceImpl  implements DealerGroupService {
 
     @Override
     public DealerGroupResponseDto getDealerGroupByBusinessId(String businessId) {
-        DealerGroup dealerGroupOpt = this.getEntityById(businessId);
+        DealerGroup dealerGroupOpt = this.getEntityById(businessId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
         return dealerGroupMapper.toResponseDto(dealerGroupOpt);
     }
 
     @Override
     @Cacheable(value = "dealerGroupEntity", key = "#businessId")
-    public DealerGroup getEntityById(String businessId) {
+    public Optional<DealerGroup> getEntityById(String businessId) {
         log.info("Fetching DealerGroup entity with businessId {} from database.", businessId);
-        return dealerGroupRepository.findByBusinessId(businessId)
-                .orElseThrow(() -> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
+        return dealerGroupRepository.findByBusinessId(businessId);
     }
 
-    @Transactional
     @Override
+    public DealerGroupResponseDto updateDealerGroup(String businessId, DealerGroupRequestDto dto) {
+        DealerGroup updated = updateDealerGroupInternal(businessId, dto);
+        return dealerGroupMapper.toResponseDto(updated);
+    }
+
+
+    @Transactional
     @CachePut(value = "dealerGroupEntity", key = "#businessId")
-    public DealerGroupResponseDto updateDealerGroup(String businessId, DealerGroupRequestDto dealerGroupRequestDto) {
+    protected DealerGroup updateDealerGroupInternal(String businessId, DealerGroupRequestDto dto) {
         DealerGroup existingDealerGroup = dealerGroupRepository.findByBusinessId(businessId)
-                .orElseThrow(()-> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
-        dealerGroupMapper.updateEntity(dealerGroupRequestDto, existingDealerGroup);
-        var savedDealerGroup = dealerGroupRepository.save(existingDealerGroup);
-        return dealerGroupMapper.toResponseDto(savedDealerGroup);
+                .orElseThrow(() -> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
+
+        dealerGroupMapper.updateEntity(dto, existingDealerGroup);
+        return dealerGroupRepository.save(existingDealerGroup);
+    }
+
+    @Override
+    public DealerGroupResponseDto partialUpdateDealerGroup(String businessId, DealerGroupRequestDto dto) {
+        DealerGroup updated = partialUpdateDealerGroupInternal(businessId, dto);
+        return dealerGroupMapper.toResponseDto(updated);
     }
 
     @Transactional
-    @Override
-    public DealerGroupResponseDto partialUpdateDealerGroup(String businessId, DealerGroupRequestDto dealerGroupRequestDto) {
+    @CachePut(value = "dealerGroupEntity", key = "#businessId")
+    protected DealerGroup partialUpdateDealerGroupInternal(String businessId, DealerGroupRequestDto dto) {
         DealerGroup existingDealerGroup = dealerGroupRepository.findByBusinessId(businessId)
-                .orElseThrow(()-> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
-        dealerGroupMapper.partialUpdate(dealerGroupRequestDto, existingDealerGroup);
-        var savedDealerGroup = dealerGroupRepository.save(existingDealerGroup);
-        return dealerGroupMapper.toResponseDto(savedDealerGroup);
+                .orElseThrow(() -> new IllegalArgumentException("Dealer Group with businessId " + businessId + " does not exist."));
+
+        dealerGroupMapper.partialUpdate(dto, existingDealerGroup);
+        return dealerGroupRepository.save(existingDealerGroup);
     }
+
 
 
 }

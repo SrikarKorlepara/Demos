@@ -39,7 +39,6 @@ public class SecurityConfig {
 
 
     @Bean
-    @Order(SecurityProperties.BASIC_AUTH_ORDER)
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
@@ -52,7 +51,8 @@ public class SecurityConfig {
                                 "/login/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/h2-console/**"
+                                "/h2-console/**",
+                                "/actuator/**"
                         ).permitAll()
                 .anyRequest().authenticated()
                 )
@@ -87,32 +87,4 @@ public class SecurityConfig {
         return builder.getAuthenticationManager();
 
     }
-
-    //    @Bean
-//    @Order(1)
-//    SecurityFilterChain formLoginChain(HttpSecurity http) throws Exception {
-//        http
-//                .securityMatcher("/login", "/oauth2/**", "/h2-console/**")
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()
-//                )
-//                .formLogin(form-> form
-//                        .successHandler((request, response, authentication) -> {
-//                            String jwt = jwtUtils.generateTokenFromUsername(
-//                                    (UserDetails) authentication.getPrincipal()
-//                            );
-//                            response.setContentType("application/json");
-//                            response.getWriter().write("{\"token\":\"" + jwt + "\"}");
-//                        }).defaultSuccessUrl("/api/auth/test/hello", true))
-//                .sessionManagement(session ->
-//                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-//                )
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .headers(headers ->
-//                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-//                );
-//
-//        return http.build();
-//    }
-
 }
